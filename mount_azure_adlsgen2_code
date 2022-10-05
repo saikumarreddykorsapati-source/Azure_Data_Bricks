@@ -1,0 +1,22 @@
+storage_account_name = " " # adlsgen2 or blob storage account name
+client_id            = " " # Application (client) ID
+tenant_id            = " " # Directory (tenant) ID
+client_secret        = " " # value (certificates & secrets -> client_secret_value)
+
+# configuring the adls_gen2 or blob to the databricks with above details
+configs = {"fs.azure.account.auth.type": "OAuth",
+           "fs.azure.account.oauth.provider.type": "org.apache.hadoop.fs.azurebfs.oauth2.ClientCredsTokenProvider",
+           "fs.azure.account.oauth2.client.id": f"{client_id}",
+           "fs.azure.account.oauth2.client.secret": f"{client_secret}",
+           "fs.azure.account.oauth2.client.endpoint": f"https://login.microsoftonline.com/{tenant_id}/oauth2/token"}
+ 
+# function to mount storage account container to the dbfs
+def mount_adls(container_name):
+  dbutils.fs.mount(
+    source = f"abfss://{container_name}@{storage_account_name}.dfs.core.windows.net/",
+    mount_point = f"/mnt/{storage_account_name}/{container_name}",
+    extra_configs = configs)
+    
+mount_adls("provide_your_adlsgen2_or_blob_container_name_here") # here in the double quotes provide storage account contaniner name to mount it to the dbfs
+
+dbutils.fs.mounts() # lists all the mounted folders from dbfs
