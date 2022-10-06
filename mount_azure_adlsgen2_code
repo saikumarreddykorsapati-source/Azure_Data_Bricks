@@ -1,7 +1,7 @@
 storage_account_name = " " # adlsgen2 or blob storage account name
-client_id            = " " # Application (client) ID
-tenant_id            = " " # Directory (tenant) ID
-client_secret        = " " # value (certificates & secrets -> client_secret_value)
+client_id            = " " # Application (client) ID # dbutils.secrets.get(scope='formula1-databricks-secret-scope',key='databricks-app-client-id')
+tenant_id            = " " # Directory (tenant) ID # dbutils.secrets.get(scope='formula1-databricks-secret-scope',key='databricks-app-tenant-id') 
+client_secret        = " " # value (certificates & secrets -> client_secret_value) # dbutils.secrets.get(scope='formula1-databricks-secret-scope',key='databricks-app-client-secret')
 
 # configuring the adls_gen2 or blob to the databricks with above details
 configs = {"fs.azure.account.auth.type": "OAuth",
@@ -17,6 +17,8 @@ def mount_adls(container_name):
     mount_point = f"/mnt/{storage_account_name}/{container_name}",
     extra_configs = configs)
     
-mount_adls("provide_your_adlsgen2_or_blob_container_name_here") # here in the double quotes provide storage account contaniner name to mount it to the dbfs
+mount_adls("provide_your_adlsgen2_or_blob_container_name_here") # calling the above function for mounting the storage account container, here in the double quotes provide storage account contaniner name to mount it to the dbfs
 
 dbutils.fs.mounts() # lists all the mounted folders from dbfs
+
+# dbutils.fs.unmount("/mnt/Storage_Account_Name/Container_Name") # unmounts the mounted storage account container on dbfs
